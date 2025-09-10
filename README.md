@@ -67,6 +67,27 @@ Credenciales iniciales: `admin / admin` (definidas en `.env`).
    - En el **frontend Angular 19** se utiliza `keycloak-angular` para manejar login/logout y tokens.  
    - En el **backend Quarkus** se configura la extensión `quarkus-oidc` para validar los tokens de Keycloak.
 
+6. Personalizar temas y páginas de login en Keycloak para adaptarse a la identidad visual del SSU.
+7. Configurar flujos de autenticación, políticas de contraseñas y seguridad adicional según las necesidades del proyecto:
+   - Habilitar en Realm las opciones de 'Resetear Contraseña', 'Registrarse' y 'Recordarme'.
+8. Ingresar email en el FROM de los correos enviados por Keycloak (recuperación de contraseña, verificación de email, etc.).
+   - En caso de no tener un servidor SMTP, se puede utilizar uno local:
+     ```bash
+        # 1) Red dedicada (una sola vez)
+        docker network create ssu-net
+
+        # 2) Mailpit en esa red
+        docker run -d --name mailpit --network ssu-net \
+          -p 8025:8025 -p 1025:1025 axllent/mailpit
+
+        # 3) Conecta tu Keycloak existente a la red (no hace falta recrearlo)
+        docker network connect ssu-net keycloak
+
+        # 4) (Opcional) reiniciar Keycloak
+        docker restart keycloak
+     ```
+   - En Keycloak poné: Host=mailpit, Port=1025, Auth=No, SSL/StartTLS=No, From cualquiera (p. ej. no-reply@ssu.local). Los mails se ven en http://localhost:8025
+
 ## Despliegue en Azure
 
 > **Nota:** El proyecto se despliega en **Azure Kubernetes Service (AKS)** junto con los demás módulos del SSU.  
