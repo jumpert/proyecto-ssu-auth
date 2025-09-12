@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.8
+    command: ["start-dev","--http-port=8081"]
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mailpit
+    networks: [ssu-net]
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks: [ssu-net]
+
+networks:
+  ssu-net:
+  
